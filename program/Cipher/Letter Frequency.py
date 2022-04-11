@@ -1,25 +1,34 @@
-import matplotlib.pyplot as plt
-from matplotlib import colors
-from matplotlib.ticker import PercentFormatter
-from functions import *
+import numpy as np
 
-def main():
-    letter_frequency_anlaysis("inputText.txt")
+#Read files, and reads all the worlds as lists
+def read_file(fileName):
+    words = []
+    with open(fileName, "r")  as  inStrm:
+        for line in inStrm:
+            words.extend(line.split(" "))
 
-
-def letter_frequency_anlaysis(fileName):
-    words = read_file(fileName)
-    frequency = count_letters(words)
-    labels = [chr(x + 65) for x in range(0,26)]
-    plt.xlabel("Alphabets")
-    plt.ylabel("Frequency")
-    plt.title("Letter Frequency Analysis")
-    plt.bar(labels, frequency)
-    plt.savefig("letter frequency")
-    plt.show()
+    return words
 
 
+#Counts letters and puts them in the right place if they're going to between
+#A - Z
+def count_letters(words):
+    #going to be analysing based on the ASCII code of the letters
+    #all the alphabet letters
+    alphabet = np.zeros(26)
+    for word in words:
+        word = word.upper()
+        for letter in word:
+            #since the ASCII code for the letters are going to be between
+            #65 and 90. Subtracting 65 to make 'A' the 0th index of the array
+            #till the 25th index of Z
+            pos = ord(letter) - 65
+            #we only care about alphabet letters for now
+            if pos >= 0 and pos <= 25:
+                alphabet[pos] += 1
+
+    return alphabet
 
 
-if __name__ == "__main__":
-    main()
+
+
