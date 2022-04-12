@@ -1,7 +1,10 @@
+from collections import deque
 import numpy as np
 
 class DES(object):
     #this is going to represent the initial permutation of the algorithm
+    #TODO: you will already have this, you should come back and delete this out
+    #of your code
     __IP = [58, 50, 42, 34, 26, 18, 10, 2,
             60, 52, 44, 36, 28, 20, 12, 4,
             62, 54, 46, 38, 30, 22, 14, 6,
@@ -103,9 +106,9 @@ class DES(object):
 
 
     #this is going to be the number of left shifts for PC-1
-    __leftShifts = [1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1 ]
+    _leftShifts = [1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1 ]
 
-    #this is going to represented the permuted choice PC-1
+    #this is going to represented the first permuted choice 
     _PC_1 = [57, 49, 41, 33, 25, 17, 9,
             1, 58, 50, 42, 34, 26, 18,
             10, 2, 59, 51, 43, 35, 27,
@@ -114,6 +117,17 @@ class DES(object):
             7, 62, 54, 46, 38, 30, 22,
             14, 6, 61, 53, 45, 37, 29,
             21, 13, 5, 28, 20, 12, 4 ]
+
+    #this is going to represent the second permuted choice
+    _PC_2 = [14,17,11,24,1, 5,
+              3,28,15,6,21,10,
+             23,19,12,4,26,8,
+             16,7,27,20,13,2,
+             41,52,31,37,47,55,
+             30,40,51,45,33,48,
+             44,49,39,56,34,53,
+             46,42,50,36,29,32
+            ]
 
 
     def __init__(self):
@@ -161,7 +175,7 @@ class DES(object):
 
     PURPOSE:
     """
-    def _apply_permutation(self, data, table):
+    def _applyPermutation(self, data, table):
         #making a string the same size of data with all 0's
         retPerm = ["0" for ii in range(0,56)]
 
@@ -172,6 +186,37 @@ class DES(object):
         retPerm = "".join(retPerm)
 
         return retPerm
+
+
+    def _splitKeys(self, permutatedKey):
+        midIndex = len(permutatedKey) // 2
+        #the left key will be stored in first index and right key will be stored
+        #in the second index of returned list
+        return [permutatedKey[:midIndex] , permutatedKey[midIndex:]]
+
+    def _createKeys(self,keySides):
+        leftKey  = deque([ii for ii in keySides[0]])
+        rightKey = deque([ii for ii in keySides[1]])
+        #they're going to be a total of 16 keys returned from the concatenation 
+        #of the right and left side of the shifted key, based on the previous 
+        #key and left shifting schedule
+        allKeys = []
+
+        for shift in self._leftShifts:
+            leftKey.rotate(shift*-1)
+            rightKey.rotate(shift*-1)
+            #making the rotated left and right side a single string
+            leftStr = "".join([ii for ii in leftKey])
+            rightStr = "".join([ii for ii in rightKey])
+            allKeys.append(leftStr + rightStr)
+
+
+
+
+        return allKeys
+
+
+
 
     #that it's going to work and to do what it's supposed to do
     def __char_to_binary(self, inChar):
