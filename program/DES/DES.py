@@ -102,7 +102,7 @@ class DES(object):
                 46,    42,   50,    36,    29,   32]
 
 
-    def __init__():
+    def __init__(self):
         pass
 
     #ACCESSOR METHODS:
@@ -110,7 +110,7 @@ class DES(object):
 
     #MUTATOR METHODS:
     #that it's going to work and to do what it's supposed to do
-    def __char_to_binary(inChar):
+    def __char_to_binary(self, inChar):
         intChar = ord(inChar)
         binaryNum = ""
 
@@ -124,14 +124,14 @@ class DES(object):
                 binaryNum = "1" + binaryNum
 
         return binaryNum
-    def __apply_permutation(byte):
+    def __apply_permutation(self, byte):
         pass
 
-    def __xor(valueOne, valueTwo):
+    def __xor(self, valueOne, valueTwo):
         return valueOne ^ valueTwo
 
-    def encypt(passage):
+    def encypt(self, passage):
         pass
 
-    def decrypt(cipher):
+    def decrypt(self, cipher):
         pass
