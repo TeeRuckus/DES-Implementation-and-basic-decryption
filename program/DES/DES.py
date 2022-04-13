@@ -5,7 +5,7 @@ class DES(object):
     #this is going to represent the initial permutation of the algorithm
     #TODO: you will already have this, you should come back and delete this out
     #of your code
-    __IP = [58, 50, 42, 34, 26, 18, 10, 2,
+    _IP = [58, 50, 42, 34, 26, 18, 10, 2,
             60, 52, 44, 36, 28, 20, 12, 4,
             62, 54, 46, 38, 30, 22, 14, 6,
             64, 56, 48, 40, 32, 24, 16, 8,
@@ -175,12 +175,16 @@ class DES(object):
 
     PURPOSE:
     """
+    #TODO: you will need to apply header guards to be able to protect
+    #this function from having the wrong inputted key size, and the wrong
+    #inputted messages size as well
     def _applyPermutation(self, data, table):
         #making a string the same size of data with all 0's
-        retPerm = ["0" for ii in range(0,56)]
+        retPerm = []
+
 
         for pos, value in enumerate(table):
-            retPerm[pos] = data[value - 1]
+            retPerm.append(data[value -1 ])
 
         #making it a clean string so we pass it back to other functions
         retPerm = "".join(retPerm)

@@ -5,6 +5,7 @@ class DESTest(unittest.TestCase):
     #going through and testing private functions to make sure they work as
     #expected in the algorithm
 
+    initialMessage = "0000000100100011010001010110011110001001101010111100110111101111" 
     originalData = "0001001100110100010101110111100110011011101111001101111111110001"
     desObj = DES()
     permutationKey = desObj._applyPermutation(originalData, desObj._PC_1)
@@ -19,7 +20,8 @@ class DESTest(unittest.TestCase):
         #desObj = DES()
         actual = self.desObj._applyPermutation(self.originalData, self.desObj._PC_1)
         self.permutationKey = actual
-        self.assertEqual(expected, actual)
+        self.assertEqual(expected, actual, "testing the first permutation "+
+        "applied to keys")
 
     def testSplitKeys(self):
         #Test 2: splitting the permutation keys into two halves, to ensure 
@@ -31,8 +33,10 @@ class DESTest(unittest.TestCase):
         leftExpected = "1111000011001100101010101111"
         rightExpected = "0101010101100110011110001111"
 
-        self.assertEqual(leftExpected, leftActual)
-        self.assertEqual(rightExpected, rightActual)
+        self.assertEqual(leftExpected, leftActual, "checking if the left side" +
+                " left shift is equal" )
+        self.assertEqual(rightExpected, rightActual, "checking if the right" +
+                " side right shift is equal")
 
     def testRoundKeys(self):
         expectedKeys =[
@@ -80,7 +84,40 @@ class DESTest(unittest.TestCase):
                 " 010111 110100 001110 110111 111100 101110 011100 111010",
                 "101111 111001 000110 001101 001111 010011 111100 001010",
                 "110010 110011 110110 001011 000011 100001 011111 110101",
-
-
                 ]
+
+        actualPerm = []
+
+        #re-creating the sixteen keys again
+
+        #re-creating the left and right side of the key to be used
+        keys = self.desObj._splitKeys(self.permutationKey)
+        #running the actual test to create the required key
+        actualKeys = self.desObj._createKeys(keys)
+
+        #applying the permutation on each of the returned keys
+        for key  in actualKeys:
+            actualPerm.append(seld.desObj._applyPermutation(key, self.desObj._PC_2))
+
+        #going through and comparing each key returned with the ones which was
+        #generated
+
+        for pos, data in enumerate(zip (expectedPerm, actualPerm)):
+            expected = data[0]
+            actual = data[1]
+            self.assertEqual(expected, actual, "applying second permutation" +
+                    " to key number [%s]" % pos )
+
+
+    def testPermutationOnMessage(self):
+        
+        #testing if I have implemented the initial permutation table correctly 
+        #into the code
+        expected = "1100110000000000110011001111111111110000101010101111000010101010"
+
+        actual = self.desObj._applyPermutation(self.initialMessage, self.desObj._IP)   
+        self.assertEqual(expected, actual, "testing if the initial permutation"+
+                " table is coded correctly in the program")
+
+
 
