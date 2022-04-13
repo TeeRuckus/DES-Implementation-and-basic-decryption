@@ -1,3 +1,4 @@
+from Errors import *
 from collections import deque
 import numpy as np
 
@@ -129,6 +130,18 @@ class DES(object):
              46,42,50,36,29,32
             ]
 
+    #this will represent the expansion selection box which will be used
+    #to expand a message from 32 bits to 48bits 
+    _EBox = [ 32,1,2,3,4,5,
+              4,5,6,7,8,9,
+              8,9,10,11,12,13,
+             12,13,14,15,16,17,
+             16,17,18,19,20,21,
+             20,21,22,23,24,25,
+             24,25,26,27,28,29,
+             28,29,30,31,32,1
+            ]
+
 
     def __init__(self):
         #I am going to have it as nothing at the current moment, and build
@@ -237,9 +250,38 @@ class DES(object):
 
     def _xor(self, streamOne, streamTwo):
 
+        if len(streamOne) != len(streamTwo):
+            raise DESBlockError("ERROR: xor stream blocks must be the same length")
+
         result = ""
         for bitOne, bitTwo in zip(streamOne, streamTwo):
             result = result + str(int(bitOne) ^ int(bitTwo))
 
         return  result
+
+    def _feistelNetwork(self, leftStream, rightStream, key):
+        pass
+
+
+    def _feistelNetworkFunction(self, rightStream, currKey):
+        #expanding the right stream bits from 32 bits to 48 bits
+        expandedStream = self._applyPermutation(rightStream, self._EBox)
+
+        if len(expandedStream) != 48:
+            raise DESBlockError("ERROR: Feistel network expansion failed"+
+                    " keys must be 48 bits. %s bits has being found" % len(expandedStream))
+
+        #xoring the expanded data with the current key, and calculating the
+        #following formula K_n + E(R_(n-1)
+        xorRes = self._xor(expandedStream, currKey)
+
+    def _group48Block(self, inBlock):
+
+        if(len(inBlock)):
+            raise DESBlockError("ERROR: the bits count must be 48 so six groups"+
+                    " can be made from the current data")
+
+
+
+        
 

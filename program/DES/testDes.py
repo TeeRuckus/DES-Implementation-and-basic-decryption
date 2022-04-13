@@ -162,5 +162,13 @@ class DESTest(unittest.TestCase):
             self.assertEqual(expected[pos], actual, "testing xor number %s" % pos) 
 
 
+    def testExpansionBox(self):
+        inputData = "11110000101010101111000010101010"
+        expected  = "011110100001010101010101011110100001010101010101"
+        actual = self.desObj._applyPermutation(inputData, self.desObj._EBox)
+        self.assertEqual(actual, expected, "testing if correct values are inputted"+
+                " into the expansion box protocol")
+
+
 
 
