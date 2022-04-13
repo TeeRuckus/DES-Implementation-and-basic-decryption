@@ -219,11 +219,8 @@ class DES(object):
 
         return allKeys
 
-
-
-
     #that it's going to work and to do what it's supposed to do
-    def __char_to_binary(self, inChar):
+    def _char_to_binary(self, inChar):
         intChar = ord(inChar)
         binaryNum = ""
 
@@ -237,9 +234,12 @@ class DES(object):
                 binaryNum = "1" + binaryNum
 
         return binaryNum
-    def __apply_permutation(self, byte):
-        pass
 
-    def __xor(self, valueOne, valueTwo):
-        return valueOne ^ valueTwo
+    def _xor(self, streamOne, streamTwo):
+
+        result = ""
+        for bitOne, bitTwo in zip(streamOne, streamTwo):
+            result = result + str(int(bitOne) ^ int(bitTwo))
+
+        return  result
 

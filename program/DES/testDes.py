@@ -119,5 +119,48 @@ class DESTest(unittest.TestCase):
         self.assertEqual(expected, actual, "testing if the initial permutation"+
                 " table is coded correctly in the program")
 
+    def testSplitKeyMessage(self):
+        #re-generating the permutated messages to see if the split will occur
+        #correctly
+        message = self.desObj._applyPermutation(self.initialMessage, self.desObj._IP)   
+        ret = self.desObj._splitKeys(message)
+        leftActual = ret[0]
+        rightActual = ret[1] 
+        leftExpected = "11001100000000001100110011111111"
+        rightExpected = "11110000101010101111000010101010"
+
+        self.assertEqual(leftExpected, leftActual, "checking if the left side" +
+                " left shift is equal for message" )
+        self.assertEqual(rightExpected, rightActual, "checking if the right" +
+                " side right shift is equal message")
+
+
+    """
+    testing if we will be getting the correct results for inputted streams
+    of data into the program
+    """
+    def testXorStreamTest(self):
+
+        streamOnes =  [
+                "10101", "0", "1", "00010101010101100101010110101100", 
+                "1111111111", "0000000", "111111"]
+
+        streamTwos  = [
+                "10000", "0", "1", "11110101010101010101011100011111",
+                "1111111111", "0000000","000000"]
+
+        expected = [
+                "00101", "0", "0", "11100000000000110000001010110011",
+                "0000000000", "0000000", "111111"
+                ]
+
+        for pos, data in enumerate(zip(streamOnes, streamTwos)):
+            testStreamOne = data[0]
+            testStreamTwo = data[1]
+            actual = self.desObj._xor(testStreamOne, testStreamTwo)
+
+            self.assertEqual(expected[pos], actual, "testing xor number %s" % pos) 
+
+
 
 
