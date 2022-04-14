@@ -177,6 +177,42 @@ class DESTest(unittest.TestCase):
         self.assertEqual(expected, actual, "testing if 48 blocks will be divided"+
                 " equally into 8 groups of 6 bits" )
 
+    def tesCalculateSBoxRow(self):
+        testData =  ["000000", "000001", "100000", "100001"]
+        expected = ["00", "01", "10", "11"]
+
+        for test, currData in testData:
+            actual = self.desObj._calculateSBoxRow(test)
+            self.assertEqual(expected[test], actual, "calculating the SBox row"+
+                    " test number %s"%test)
+
+    @unittest.skip("not fully implemented as yet")
+    def testCalculateSBoxCol(self):
+        expected = [0, 1, 2, 3]
+        pass 
+
+    @unittest.skip("not fully implemented as yet")
+    def testrowNumberConversion(self):
+        pass
+
+    @unittest.skip("not fully implemented as yet")
+    def testcolNumber(self):
+        pass 
+
+
+    @unittest.skip("I am testing individual functions, making sure that they"+
+            " do what they're supposed to do")
+    def testFeistelNetworkFunction(self):
+        righStreamData = "11110000101010101111000010101010"
+        #the sixteen keys which were generated from previous example 
+        key = "000110110000001011101111111111000111000001110010"
+        expected = "00100011010010101010100110111011"
+        actual= self.desObj._feistelNetworkFunction(righStreamData, key)
+
+
+        self.assertEqual(expected, actual, "testing if the feistel network" +
+                " block will produce and return the right products")
+
 
 
 
