@@ -42,7 +42,7 @@ class DES(object):
     __SBox =[
             # S1 
             [[14, 4, 13, 1, 2, 15, 11, 8, 3, 10, 6, 12, 5, 9, 0, 7],
-             [0, 15, 7, 4, 14, 2, 13, 10, 3, 6, 12, 11, 9, 5, 3, 8],
+             [0, 15, 7, 4, 14, 2, 13, 1,10, 6, 12, 11, 9, 5, 3, 8],
              [4, 1, 14, 8, 13, 6, 2, 11, 15, 12, 9, 7, 3, 10, 5, 0],
              [15, 12, 8, 2, 4, 9, 1, 7, 5, 11, 3, 14, 10, 0, 6, 13]],
 
@@ -74,7 +74,7 @@ class DES(object):
             [[12, 1, 10, 15, 9, 2, 6, 8, 0, 13, 3, 4, 14, 7, 5, 11],
              [10, 15, 4, 2, 7, 12, 9, 5, 6, 1, 13, 14, 0, 11, 3, 8],
              [9, 14, 15, 5, 2, 8, 12, 3, 7, 0, 4, 10, 1, 13, 11, 6],
-             [4, 3, 2, 12, 9, 5, 15, 10, 11, 14, 1, 7, 10, 0, 8, 13]],
+             [ 4, 3, 2, 12, 9, 5, 15, 10, 11, 14, 1, 7, 6, 0, 8, 13]],
 
             # S7
             [[4, 11, 2, 14, 15, 0, 8, 13, 3, 12, 9, 7, 5, 10, 6, 1],
@@ -84,9 +84,9 @@ class DES(object):
 
             # S8
             [[13, 2, 8, 4, 6, 15, 11, 1, 10, 9, 3, 14, 5, 0, 12, 7],
-             [1, 15, 13, 8, 10, 3, 7, 4, 12, 5, 6, 11, 10, 14, 9, 2],
-             [7, 11, 4, 1, 9, 12, 14, 2, 0, 6, 10, 10, 15, 3, 5, 8],
-             [2, 1, 14, 7, 4, 10, 8, 13, 15, 12, 9, 9, 3, 5, 6, 11]],
+             [1, 15, 13, 8, 10, 3, 7, 4, 12, 5, 6, 11, 0, 14, 9, 2],
+             [7, 11, 4, 1, 9, 12, 14, 2, 0, 6, 10, 13, 15, 3, 5, 8],
+             [2, 1, 14, 7, 4, 10, 8, 13, 15, 12, 9, 0, 3, 5, 6, 11]],
         ]
 
 
@@ -261,7 +261,7 @@ class DES(object):
         return binaryNum
     
     
-    def _calcInt2Binary(self, intNum):
+    def _calcInt2Binary(self, intNum, requiredLen):
         binaryNum = ""
         while intNum > 0:
             remindar = intNum % 2
@@ -272,7 +272,18 @@ class DES(object):
             else:
                 binaryNum = "1" + binaryNum
 
+        if len(binaryNum) != requiredLen:
+            difference = requiredLen - len(binaryNum)
+            binaryNum = self._padBinary(binaryNum, difference)
+
         return binaryNum
+
+    #padding to the left of the binary number, as that will not increase the
+    #number of  the binary number
+    def _padBinary(self, inBinary, padNum):
+        padDigits = [str(xx) for xx in range (0, padNum)]
+        padDigits = "".join(padDigits)
+        return padDigits + inBinary
     
     def _calcBinary2Int(self, inBinary):
         intNum = 0
@@ -323,13 +334,9 @@ class DES(object):
             rowNumInt = self._calcBinary2Int(rowNumBinary)
             colNumInt = self._calcBinary2Int(colNumBinary)
 
-            print("Current SBox \n", (currSBox))
-            print("row: %s  " % rowNumInt)
-            print("col %s " %colNumInt)
-
             value = currSBox[rowNumInt][colNumInt]
 
-            sBoxAppliedFuncList.append(self._calcInt2Binary(value))
+            sBoxAppliedFuncList.append(self._calcInt2Binary(value,4))
 
         #the final step of the function, applying permutations of re-calculated
         #values
@@ -339,7 +346,7 @@ class DES(object):
         #sanity check
 
         assert len(sBoxAppliedFuncStr) == 32, "the applied function bits must"+\
-        " be 32 bits long"
+        " be 32 bits long but %s bits found" % len(sBoxAppliedFuncStr)
         
         return self._applyPermutation(sBoxAppliedFuncStr, self._PBox)
 

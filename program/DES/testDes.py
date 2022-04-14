@@ -207,7 +207,6 @@ class DESTest(unittest.TestCase):
     def testrowNumberConversion(self):
         testData =  ["000000", "000001", "100000", "100001"]
         expected = [0, 1, 2, 3]
-
         for test, currData in enumerate(testData):
             actual = self.desObj._calculateSBoxRow(currData)
             actual = self.desObj._calcBinary2Int(actual)
@@ -215,13 +214,28 @@ class DESTest(unittest.TestCase):
                     " of numbers are being produced test # %s" % (test+1))
 
 
-    @unittest.skip("not fully implemented as yet")
     def testcolNumber(self):
-        pass 
+        testData = [
+                "000000", "000010", "000100", "000110", "001000",
+                "001010", "001100", "001110", "010000", "010010",
+                "010100", "010110", "011000", "011010", "011100",
+                "011110"]
+        expected = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
+
+        for test, currData in enumerate(testData):
+            actual = self.desObj._calculateSBoxCol(currData)
+            actual = self.desObj._calcBinary2Int(actual) 
+            self.assertEqual(actual, expected[test], "checking if the right range"
+                    + "the column numbers will be produced. Test # %s" % (test+1))
 
 
-    @unittest.skip("I am testing individual functions, making sure that they"+
-            " do what they're supposed to do")
+    def testCalcInt2Binary(self):
+        pass
+
+
+
+    #@unittest.skip("I am testing individual functions, making sure that they"+
+    #        " do what they're supposed to do")
     def testFeistelNetworkFunction(self):
         righStreamData = "11110000101010101111000010101010"
         #the sixteen keys which were generated from previous example 
