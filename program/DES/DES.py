@@ -40,49 +40,49 @@ class DES(object):
     #the s-boxes are going to be derived from the following textbook extract
     #https://academic.csuohio.edu/yuc/security/Chapter_06_Data_Encription_Standard.pdf
     __SBox =[
-            # S1 - Checked
+            # S1 
             [14, 4, 13, 1, 2, 15, 11, 8, 3, 10, 6, 12, 5, 9, 0, 7,
              0, 15, 7, 4, 14, 2, 13, 10, 3, 6, 12, 11, 9, 5, 3, 8,
              4, 1, 14, 8, 13, 6, 2, 11, 15, 12, 9, 7, 3, 10, 5, 0,
              15, 12, 8, 2, 4, 9, 1, 7, 5, 11, 3, 14, 10, 0, 6, 13],
 
-            # S2 - Checked
+            # S2
             [15, 1, 8, 14, 6, 11, 3, 4, 9, 7, 2, 13, 12, 0, 5, 10,
              3, 13, 4, 7, 15, 2, 8, 14, 12, 0, 1, 10, 6, 9, 11, 5,
              0, 14, 7, 11, 10, 4, 13, 1, 5, 8, 12, 6, 9, 3, 2, 15,
              13, 8, 10, 1, 3, 15, 4, 2, 11, 6, 7, 12, 0, 5, 14, 9],
 
-            # S3 - Checked
+            # S3
             [10, 0, 9, 14, 6, 3, 15, 5, 1, 13, 12, 7, 11, 4, 2, 8,
              13, 7, 0, 9, 3, 4, 6, 10, 2, 8, 5, 14, 12, 11, 15, 1,
              13, 6, 4, 9, 8, 15, 3, 0, 11, 1, 2, 12, 5, 10, 14, 7,
              1, 10, 13, 0, 6, 9, 8, 7, 4, 15, 14, 3, 11, 5, 2, 12],
 
-            # S4 - Checked
+            # S4
             [7, 13, 14, 3, 0, 6, 9, 10, 1, 2, 8, 5, 11, 12, 4, 15,
              13, 8, 11, 5, 6, 15, 0, 3, 4, 7, 2, 12, 1, 10, 14, 9,
              10, 6, 9, 0, 12, 11, 7, 13, 15, 1, 3, 14, 5, 2, 8, 4,
              3, 15, 0, 6, 10, 1, 13, 8, 9, 4, 5, 11, 12, 7, 2, 14],
 
-            # S5 - Checked
+            # S5
             [2, 12, 4, 1, 7, 10, 11, 6, 8, 5, 3, 15, 13, 0, 14, 9,
              14, 11, 2, 12, 4, 7, 13, 1, 5, 0, 15, 10, 3, 9, 8, 6,
              4, 2, 1, 11, 10, 13, 7, 8, 15, 9, 12, 5, 6, 3, 0, 14,
              11, 8, 12, 7, 1, 14, 2, 13, 6, 15, 0, 9, 10, 4, 5, 3],
 
-            # S6 - Checked
+            # S6
             [12, 1, 10, 15, 9, 2, 6, 8, 0, 13, 3, 4, 14, 7, 5, 11,
              10, 15, 4, 2, 7, 12, 9, 5, 6, 1, 13, 14, 0, 11, 3, 8,
              9, 14, 15, 5, 2, 8, 12, 3, 7, 0, 4, 10, 1, 13, 11, 6,
              4, 3, 2, 12, 9, 5, 15, 10, 11, 14, 1, 7, 10, 0, 8, 13],
 
-            # S7 - Checked
+            # S7
             [4, 11, 2, 14, 15, 0, 8, 13, 3, 12, 9, 7, 5, 10, 6, 1,
              13, 0, 11, 7, 4, 9, 1, 10, 14, 3, 5, 12, 2, 15, 8, 6,
              1, 4, 11, 13, 12, 3, 7, 14, 10, 15, 6, 8, 0, 5, 9, 2,
              6, 11, 13, 8, 1, 4, 10, 7, 9, 5, 0, 15, 14, 2, 3, 12],
 
-            # S8 - Checked
+            # S8
             [13, 2, 8, 4, 6, 15, 11, 1, 10, 9, 3, 14, 5, 0, 12, 7,
              1, 15, 13, 8, 10, 3, 7, 4, 12, 5, 6, 11, 10, 14, 9, 2,
              7, 11, 4, 1, 9, 12, 14, 2, 0, 6, 10, 10, 15, 3, 5, 8,
@@ -142,6 +142,15 @@ class DES(object):
              28,29,30,31,32,1
             ]
 
+    _PBox = [16,   7,  20,  21,
+             29,  12,  28,  17,
+              1,  15,  23,  26,
+              5,  18,  31,  10,
+              2,   8,  24,  14,
+             32,  27,   3,   9,
+             19,  13,  30,   6,
+             22,  11,   4,  25]
+
 
     def __init__(self):
         #I am going to have it as nothing at the current moment, and build
@@ -172,8 +181,6 @@ class DES(object):
 
         for pos, value in enumerate(__leftShifts):
             pass
-
-
 
         return shiftedData
 
@@ -232,11 +239,16 @@ class DES(object):
 
         return allKeys
 
+    #TODO: you will need to test this function and to see if this is going 
+    #to work
     #that it's going to work and to do what it's supposed to do
     def _char_to_binary(self, inChar):
         intChar = ord(inChar)
         binaryNum = ""
 
+        #TODO: you will need to come back and delete this section as I have refactored this code
+        binaryNum = self._calcInt2Binary(intChar)
+        """
         while intChar > 0:
             remindar = intChar % 2
             intChar = intChar // 2
@@ -245,8 +257,30 @@ class DES(object):
                 binaryNum = "0" + binaryNum
             else:
                 binaryNum = "1" + binaryNum
+        """
+        return binaryNum
+    
+    
+    def _calcInt2Binary(self, intNum):
+        binaryNum = ""
+        while intNum > 0:
+            remindar = intNum % 2
+            intNum = intNum // 2
+
+            if remindar == 0:
+                binaryNum = "0" + binaryNum
+            else:
+                binaryNum = "1" + binaryNum
 
         return binaryNum
+    
+    def _calcBinary2Int(self, inBinary):
+        intNum = 0
+
+        for num in inBinary:
+            intNum = intNum + 2 ** int(num)
+
+        return intNum
 
     def _xor(self, streamOne, streamTwo):
 
@@ -265,6 +299,7 @@ class DES(object):
 
     def _feistelNetworkFunction(self, rightStream, currKey):
         #expanding the right stream bits from 32 bits to 48 bits
+        sBoxAppliedFuncList = []
         expandedStream = self._applyPermutation(rightStream, self._EBox)
 
         if len(expandedStream) != 48:
@@ -274,14 +309,60 @@ class DES(object):
         #xoring the expanded data with the current key, and calculating the
         #following formula K_n + E(R_(n-1)
         xorRes = self._xor(expandedStream, currKey)
+        grouped8s = self._group48Block(xorRes)
+
+        for sBoxNum, binary in enumerate(grouped8s):
+            currSBox = self.__SBox[sBoxNum]
+            rowNumBinary = self._calculateSBoxRow(binary)
+            colNumBinary = self._calculateSBoxCol(binary)
+            rowNumInt = self._calcBinary2Int(rowNumBinary)
+            colNumInt = self._calcBinary2Int(colNumBinary)
+
+            value = currSBox[rowNumInt][colNumInt]
+
+            sBoxAppliedFuncList.append(self._calcInt2Binary(value))
+
+        #the final step of the function, applying permutations of re-calculated
+        #values
+
+        sBoxAppliedFuncStr  = "".join(sBoxAppliedFuncList)
+
+        #sanity check
+
+        assert len(sBoxAppliedFuncStr) == 32, "the applied function bits must"+\
+        " be 32 bits long"
+        
+        return self._applyPermutation(sBoxAppliedFuncStr, self._PBox)
+
+    def _calculateSBoxRow(self, inBlock):
+        self.__validateBlockLen6(inBlock)
+        return inBlock[0] + inBlock[-1]
+
+    def _calculateSBoxCol(self, inBlock):
+        self.__validateBlockLen6(inBlock)
+        return inBlock[1:-1]
 
     def _group48Block(self, inBlock):
 
-        if(len(inBlock)):
+        if(len(inBlock) != 48):
             raise DESBlockError("ERROR: the bits count must be 48 so six groups"+
-                    " can be made from the current data")
+            " can be made from the current data")
 
+        #we always know it's going to be 8 groups of six hence, we can hard
+        #code the running of this functio
+        startValues = [xx for xx in range(0, 49, 6)]
 
+        #we always know that the end is going to be 8 elements away
+        #return [inBlock[start: start + 6] for start in startValues]
+        return [inBlock[start:startValues[pos+1]] for pos, start in \
+                enumerate(startValues) if pos < len(startValues) -1]
 
-        
+    def _calculateAddressSBox(self, inAddress):
+        if (len (inBlock) != 6):
+            raise DESBlockError("ERROR: the address must be a total of 6 bits")
+
+    def __validateBlockLen6(self, inBlock):
+        if (len (inBlock) != 6):
+            raise DESBlockError("ERROR: the to calculate the row, the input" +
+                    " block must be 6 bits long")
 

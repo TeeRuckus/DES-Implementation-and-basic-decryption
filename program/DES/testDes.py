@@ -169,6 +169,14 @@ class DESTest(unittest.TestCase):
         self.assertEqual(actual, expected, "testing if correct values are inputted"+
                 " into the expansion box protocol")
 
+    def testGroup48Blocks(self):
+        inBlock = "". join([str(1) for x in range(0,48)])
+        expected = ['111111', '111111', '111111', '111111', '111111', '111111', '111111', '111111']
+        actual = self.desObj._group48Block(inBlock)
+
+        self.assertEqual(expected, actual, "testing if 48 blocks will be divided"+
+                " equally into 8 groups of 6 bits" )
+
 
 
 
