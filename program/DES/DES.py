@@ -276,9 +276,14 @@ class DES(object):
     
     def _calcBinary2Int(self, inBinary):
         intNum = 0
+        powerPositions =  [xx  for xx in range(0,len(inBinary))]
+        #reversing the power positions, as the for loop is going to read right
+        #to left, instead of left to right 
+        powerPositions.reverse()
 
-        for num in inBinary:
-            intNum = intNum + 2 ** int(num)
+        for num, pos in zip(inBinary, powerPositions):
+            if int(num) == 1:
+                intNum = intNum + 2 ** int(pos)
 
         return intNum
 

@@ -181,19 +181,39 @@ class DESTest(unittest.TestCase):
         testData =  ["000000", "000001", "100000", "100001"]
         expected = ["00", "01", "10", "11"]
 
-        for test, currData in testData:
-            actual = self.desObj._calculateSBoxRow(test)
+        for test, currData in enumerate(testData):
+            actual = self.desObj._calculateSBoxRow(currData)
             self.assertEqual(expected[test], actual, "calculating the SBox row"+
                     " test number %s"%test)
 
-    @unittest.skip("not fully implemented as yet")
     def testCalculateSBoxCol(self):
-        expected = [0, 1, 2, 3]
-        pass 
+        testData = [
+                "000000", "000010", "000100", "000110", "001000",
+                "001010", "001100", "001110", "010000", "010010",
+                "010100", "010110", "011000", "011010", "011100",
+                "011110"]
+        expected = [
+                "0000", "0001", "0010", "0011", "0100",
+                "0101", "0110", "0111", "1000", "1001",
+                "1010", "1011", "1100", "1101", "1110",
+                "1111"]
 
-    @unittest.skip("not fully implemented as yet")
+        for test, currData in enumerate(testData):
+            actual = self.desObj._calculateSBoxCol(currData)
+            self.assertEqual(expected[test], actual, "calculating the SBox col"+
+                    " test number %s" % test)
+
+
     def testrowNumberConversion(self):
-        pass
+        testData =  ["000000", "000001", "100000", "100001"]
+        expected = [0, 1, 2, 3]
+
+        for test, currData in enumerate(testData):
+            actual = self.desObj._calculateSBoxRow(currData)
+            actual = self.desObj._calcBinary2Int(actual)
+            self.assertEqual(actual, expected[test], "checking if the right range"+
+                    " of numbers are being produced test # %s" % (test+1))
+
 
     @unittest.skip("not fully implemented as yet")
     def testcolNumber(self):
