@@ -11,7 +11,6 @@ access date: 15/04/2021
 Title of web page: The DES algorithm Illustrated
 Author: J. Orlin Grabbe
 """
-#TODO: you will need to implement a hexadecimal formatter to be able to format your input as it's being read into the file, and converting it back to binary when it is feeding it into the DES algorithm
 
 #an Enum class to represent if the current message has being encrypted or not
 class encryptionStatus(Enum):
@@ -182,6 +181,7 @@ class DES(object):
         self.__key = None 
         self.__message = None
         self.__encryption  = encryptionStatus.decrypted
+        self.__paddedZeros = 0
 
     #ACCESSOR METHODS:
     @property
@@ -200,19 +200,44 @@ class DES(object):
 
     #MUTATOR METHODS:
     @key.setter
+    #TODO: I am also going to be assuming that the user will be inputting a word as their key
     def key(self, newKey):
+        #TODO: you will need to be able to do some padding or chopping depending on what the user has inputted into your program
+
+        #trying to determine if binary number already 
+        try: 
+            binaryNum = int(newKey, 2)
+        except ValueError:
+            #not a binary number and must be converted to a binary number
+            binaryNum = []
+            for char in newKey:
+                binaryNum.append(self._char2Binary(char))
+
+            #making it to whole entire string 
+            binaryNum = "".join(binaryNum)
+            newKey = binaryNum
+
+
+        keySize = len(newKey)
+        #we will have to do some padding 
+        if keySize <= 64:
+            newKey = self._padBinaryNum(newKey, 64)
+        else:
+            newKey = newKey[:64]
+            #we will have to do some chopping, just going to take first 64 bits
+
+        #sanity check, to ensure that everything was done correctly
         self.__validateBlockLen(newKey, 64)
         self.__key = newKey
 
     @message.setter
     def message(self, newMessage):
-        self.__validateBlockLen(newMessage, 64)
         self.__message = newMessage
 
     #deleter methods, to clear the values which have being set already 
     @key.deleter
     def key(self):
-        del self.__key 
+        del self.__key
 
     @message.deleter
     def message(self):
@@ -232,6 +257,7 @@ class DES(object):
         #to be represented by a 64 block stream
 
         #how many bits will need to be padded to make the message be a multiple of 64
+        self.__paddedZeros = len(self.__message) % 64
         self.__message = self._padBinaryNum(self.__message, 64)
 
         #we know that all the values are going to be multiples of 64 hence,
@@ -291,7 +317,6 @@ class DES(object):
         return inMessage
 
     def _createBlocks(self,inBinary,startVal):
-        #TODO:you will need to refactor the gorup 48 function, and you will use a for loop instead of  list comprehensions
         blocks = []
         for pos, start in enumerate(startVal):
             #if they is going to be only one block, we just ant to return that
@@ -302,9 +327,6 @@ class DES(object):
 
         return blocks
 
-
-
-    #TODO:you will need to come back and make sure that you're going to getting the exact same characters. They're some trailing characters which are missing from the file. So you will need to do
     def decrypt(self):
         #all the processing of splitting the cipher text into 64 blocks will
         #occur and happen here
@@ -321,11 +343,11 @@ class DES(object):
             decryptedBlocks.append(self.__decryptBlock(block ))
 
         decryptedMssg = "".join(decryptedBlocks)
-        self.__message = decryptedMssg
+        self.__message = decryptedMssg[self.__paddedZeros:]
         self.__encryption = encryptionStatus.decrypted
         self.__key = None
 
-        return decryptedMssg
+        return decryptedMssg[self.__paddedZeros:]
 
 
     def __decryptBlock(self, inCipher):
@@ -357,8 +379,6 @@ class DES(object):
             leftMssg, rightMssg = self._feistelNetwork(leftMssg, rightMssg,\
                     permutatedKeys[currPos])
 
-
-        #TODO: play around with this, and see if it's going to impact how this is going to be used
         decryptedMssg = rightMssg + leftMssg
         inCipher = self._applyPermutation(decryptedMssg, self._invPer)
 
@@ -471,9 +491,6 @@ class DES(object):
 
     PURPOSE:
     """
-    #TODO: you will need to apply header guards to be able to protect
-    #this function from having the wrong inputted key size, and the wrong
-    #inputted messages size as well
     def _applyPermutation(self, data, table):
         #making a string the same size of data with all 0's
         retPerm = []
@@ -515,9 +532,6 @@ class DES(object):
 
         return allKeys
 
-    #TODO: you will need to test this function and to see if this is going 
-    #to work
-    #that it's going to work and to do what it's supposed to do
     def _char2Binary(self, inChar):
         intChar = ord(inChar)
         binaryNum = ""
@@ -548,18 +562,6 @@ class DES(object):
     def _calcBinary2Int(self, inBinary):
         return int(inBinary, 2)
             
-        #TODO: you will need to come back and delete this
-        """intNum = 0
-        powerPositions =  [xx  for xx in range(0,len(inBinary))]
-        #reversing the power positions, as the for loop is going to read right
-        #to left, instead of left to right 
-        powerPositions.reverse()
-
-        for num, pos in zip(inBinary, powerPositions):
-            if int(num) == 1:
-                intNum = intNum + 2 ** int(pos)
-
-        return intNum"""
 
     def _xor(self, streamOne, streamTwo):
 
