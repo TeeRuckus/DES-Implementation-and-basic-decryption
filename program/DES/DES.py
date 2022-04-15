@@ -224,11 +224,34 @@ class DES(object):
 
         #checking on how much we will need to pad the message by for each block
         #to be represented by a 64 block stream
-        multiples = len(self.__message)
-        #how many bits will need t 
-        remainder = len(self.__message) % 64
 
-        encryptedMssg = self.__encryptBlock(self.__message)
+        #how many bits will need to be padded to make the message be a multiple of 64
+        remainder = len(self.__message) % 64
+        bits = "".join([str(xx) for xx in range(0,remainder)])
+        #padding the front of the message with the required zeros
+        self.__message = bits + self.__message
+
+        #we know that all the values are going to be multiples of 64 hence,
+        #making all the starting  values of the function
+        startVal = [xx for xx in range(0, len(self.__message), 64)]
+
+        #TODO:you will need to refactor the gorup 48 function, and you will use a for loop instead of  list comprehensions
+        #the blocks which will have to be created 
+        blocks = []
+        for pos, start in enumerate(startVal):
+            #if they is going to be only one block, we just ant to return that
+            if len(startVal) == 1:
+                blocks.append(self.__message)
+            elif pos < len(startVal) - 1:
+                blocks.append(self.__message[start:startVal[pos+1]])
+
+        #encrypting each and every single block which was created, and joining
+        #them back into one big string
+        encryptedBlocks = []
+        for block in blocks:
+            encryptedBlocks.append(self.__encryptBlock(block))
+
+        encryptedMssg = "".join(encryptedBlocks)
         self.__message = encryptedMssg
         return encryptedMssg
 
@@ -455,6 +478,7 @@ class DES(object):
     
     def _calcInt2Binary(self, intNum, requiredLen):
         return format(intNum, "0>"+str(requiredLen)+"b")
+        #TODO: you will need to come back and delete these functions as you're not using them anymore
         """binaryNum = ""
         while intNum > 0:
             remindar = intNum % 2
