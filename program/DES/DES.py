@@ -226,24 +226,14 @@ class DES(object):
         #to be represented by a 64 block stream
 
         #how many bits will need to be padded to make the message be a multiple of 64
-        remainder = len(self.__message) % 64
-        bits = "".join([str(xx) for xx in range(0,remainder)])
-        #padding the front of the message with the required zeros
-        self.__message = bits + self.__message
+        self.__message = self._padBinaryNum(self.__message, 64)
 
         #we know that all the values are going to be multiples of 64 hence,
         #making all the starting  values of the function
         startVal = [xx for xx in range(0, len(self.__message), 64)]
 
-        #TODO:you will need to refactor the gorup 48 function, and you will use a for loop instead of  list comprehensions
         #the blocks which will have to be created 
-        blocks = []
-        for pos, start in enumerate(startVal):
-            #if they is going to be only one block, we just ant to return that
-            if len(startVal) == 1:
-                blocks.append(self.__message)
-            elif pos < len(startVal) - 1:
-                blocks.append(self.__message[start:startVal[pos+1]])
+        blocks = self._createBlocks(self.__message, startVal)
 
         #encrypting each and every single block which was created, and joining
         #them back into one big string
@@ -256,7 +246,6 @@ class DES(object):
         return encryptedMssg
 
     #Public methods
-    #TODO: you will need to change this to encrypting a block instead
     def __encryptBlock(self, inMessage):
         #if all the appropriate information hasn't being loaded into the object
         #we can't start decrypting the message
@@ -293,6 +282,20 @@ class DES(object):
 
 
         return inMessage
+
+    def _createBlocks(self,inBinary,startVal):
+        #TODO:you will need to refactor the gorup 48 function, and you will use a for loop instead of  list comprehensions
+        blocks = []
+        for pos, start in enumerate(startVal):
+            #if they is going to be only one block, we just ant to return that
+            if len(startVal) == 1:
+                blocks.append(inBinary)
+            elif pos < len(startVal) - 1:
+                blocks.append(inBinary[start:startVal[pos+1]])
+
+        return blocks
+
+
 
     def decrypt(self):
         #all the processing of splitting the cipher text into 64 blocks will
@@ -344,6 +347,42 @@ class DES(object):
 
         return inCipher
 
+    def loadFile(self, fileName):
+        with open(fileName, "r") as inStrm:
+            #read the file in as a gigantic string
+            fileContents = inStrm.readlines()
+
+        #I want the file contents as one giant string
+        fileContents = "".join(fileContents)
+        binaryFileContents = []
+        for char in fileContents:
+            binaryFileContents.append(self._char2Binary(char))
+
+        #making this back into one giant string again
+        binaryFileContents = "".join(binaryFileContents)
+        self.__message = binaryFileContents
+
+        return binaryFileContents
+
+    def saveFile(self, fileName):
+        #grouping the binary into groups of 8 bits
+        binaryMessage = self._padBinaryNum(self.__message, 8)
+
+        #grouping the current message with each group having 8 bits
+        startVal =  [xx for xx in range(0, len(binaryMessage), 8)]
+        hexGroups = self._createBlocks(binaryMessage, startVal)
+
+        with open(fileName, "w" ) as outStrm:
+            for binary in hexGroups:
+                outStrm.write(self._binary2Hexadecimal(binary))
+
+
+    def _padBinaryNum(self, inBinary, requiredLen):
+        remainder = len(inBinary) % requiredLen
+        bits = "".join([str(xx) for xx in range(0,remainder)])
+        #padding the front of the message with the required zeros
+        inBinary = bits + inBinary
+        return  inBinary
 
     def _keyschedule(self):
         permutatedKeys = []
@@ -457,43 +496,21 @@ class DES(object):
     #TODO: you will need to test this function and to see if this is going 
     #to work
     #that it's going to work and to do what it's supposed to do
-    def _char_to_binary(self, inChar):
+    def _char2Binary(self, inChar):
         intChar = ord(inChar)
         binaryNum = ""
 
-        #TODO: you will need to come back and delete this section as I have refactored this code
-        binaryNum = self._calcInt2Binary(intChar)
-        """
-        while intChar > 0:
-            remindar = intChar % 2
-            intChar = intChar // 2
+        #we want this to be easily represented in hexadecimal, and
+        #we don't want information to be lost in the process. Hence,
+        #requiring that each character will be represented by 8 bits. As
+        #that will encompass all characters on the ASCII table
+        binaryNum = self._calcInt2Binary(intChar, 8)
 
-            if remindar == 0:
-                binaryNum = "0" + binaryNum
-            else:
-                binaryNum = "1" + binaryNum
-        """
         return binaryNum
     
     
     def _calcInt2Binary(self, intNum, requiredLen):
         return format(intNum, "0>"+str(requiredLen)+"b")
-        #TODO: you will need to come back and delete these functions as you're not using them anymore
-        """binaryNum = ""
-        while intNum > 0:
-            remindar = intNum % 2
-            intNum = intNum // 2
-
-            if remindar == 0:
-                binaryNum = "0" + binaryNum
-            else:
-                binaryNum = "1" + binaryNum
-
-        if len(binaryNum) != requiredLen:
-            difference = requiredLen - len(binaryNum)
-            binaryNum = self._padBinary(binaryNum, difference)
-
-        return binaryNum"""
 
     #padding to the left of the binary number, as that will not increase the
     #number of  the binary number

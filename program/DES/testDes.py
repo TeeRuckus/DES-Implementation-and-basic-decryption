@@ -307,8 +307,13 @@ class DESTest(unittest.TestCase):
         self.assertEqual(actualDecrypt, initialMessage, "testing of the"+
                 " decryption function of DES")
 
+    def testChar2Binary(self):
+        #all ASCII symbols can be represented by a range between 0 and 127
+        testCharactersList = [chr(xx) for xx in range (0, 128)]
 
+        expectedList  = [format(xx, "0>8b") for xx in range(0,128)]
 
-
-
-
+        for test, expected in zip(testCharactersList, expectedList):
+            actual = self.desObj._char2Binary(test)
+            self.assertEqual(expected, actual, "testing if character to" +
+                    " binary function is working as expected")
