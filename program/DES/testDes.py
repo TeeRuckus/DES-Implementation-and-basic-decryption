@@ -257,7 +257,7 @@ class DESTest(unittest.TestCase):
 
 
     def testHexadecimalToBinary(self):
-        expected = ["0000","0001","0010","0011","0100","0101","0110","0111",
+        expected = ["0","1","10","11","100","101","110","111",
                 "1000","1001","1010","1011","1100","1101","1110", "1111"]
 
         testData = ["0", "1", "2", "3", "4","5","6","7", "8", "9", "A", "B", 
@@ -268,6 +268,23 @@ class DESTest(unittest.TestCase):
             self.assertEqual(actual, expected[test], "testing for successful" +
                     " conversation from hexadecimal numbers to binary numbers" + 
                     " test # %s" % (test + 1))
+
+    def testEncryption(self):
+        #this will be in hex representation, the data strucuure will allow the messages in binary
+
+        initialMessage = "0123456789ABCDEF"
+        initialMessage = self.desObj._hexadecimal2Binary(initialMessage)
+
+        expected = "85E813540F0AB405"
+        expected = self.desObj._hexadecimal2Binary(expected)
+
+        self.desObj.message = initialMessage
+        self.desObj.key =  "0001001100110100010101110111100110011011101111001101111111110001"
+
+        actual = self.desObj.encrypt()
+
+        self.assertEqual(actual, expected, "testing the encryption of the DES"+
+                " algorithm")
 
 
 

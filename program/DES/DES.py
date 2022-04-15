@@ -197,6 +197,8 @@ class DES(object):
     @message.setter
     def message(self, newMessage):
         #TODO: you will need to do some checking in her, to make sure if it's going to be in binary or hexadecimal before you read it and do anything to it
+        #TODO: you will need to come back and uncomment this, once you have figure out
+        #your padding strategy for your algorithm
         self.__validateBlockLen(newMessage, 64)
         self.__message = newMessage
 
@@ -216,7 +218,7 @@ class DES(object):
 
     #Public methods
     #TODO: you will need come back and test this function to see if it will work
-    def encypt(self):
+    def encrypt(self):
         #if all the appropriate information hasn't being loaded into the object
         #we can't start decrypting the message
         if self.__message == None:
@@ -260,6 +262,9 @@ class DES(object):
         #applying the final inverse permutation on the given message
         self.__message = self._applyPermutation(encryptedMssg, self._invPer)
         self.__encryption = False
+        #TODO: find out if this is going to be necessary to d
+        #deleting the key after the encryption for security reasons
+        self.__key = None
 
         return self.__message
 
@@ -288,7 +293,7 @@ class DES(object):
     def _hexadecimal2Binary(self, inHex):
         decNum = int(inHex, 16)
         #I want these numbers in sets of 4
-        binaryNum = format(decNum, "0>4b")
+        binaryNum = format(decNum, "b")
 
         return binaryNum
 
