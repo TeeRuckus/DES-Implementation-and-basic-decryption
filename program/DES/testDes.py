@@ -97,7 +97,7 @@ class DESTest(unittest.TestCase):
 
         #applying the permutation on each of the returned keys
         for key  in actualKeys:
-            actualPerm.append(seld.desObj._applyPermutation(key, self.desObj._PC_2))
+            actualPerm.append(self.desObj._applyPermutation(key, self.desObj._PC_2))
 
         #going through and comparing each key returned with the ones which was
         #generated
@@ -228,14 +228,8 @@ class DESTest(unittest.TestCase):
             self.assertEqual(actual, expected[test], "checking if the right range"
                     + "the column numbers will be produced. Test # %s" % (test+1))
 
-
-    def testCalcInt2Binary(self):
-        pass
-
-
-
-    #@unittest.skip("I am testing individual functions, making sure that they"+
-    #        " do what they're supposed to do")
+    @unittest.skip("I am testing individual functions, making sure that they"+
+            " do what they're supposed to do")
     def testFeistelNetworkFunction(self):
         righStreamData = "11110000101010101111000010101010"
         #the sixteen keys which were generated from previous example 

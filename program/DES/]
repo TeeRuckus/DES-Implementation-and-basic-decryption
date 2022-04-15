@@ -244,25 +244,12 @@ class DES(object):
         initalPermutationMessg = self._applyPermutation(self.__message, self._IP)
         leftMssg, rightMssg = self._splitKeys(initalPermutationMessg)
 
-        #applying the sixteen rounds of feistel
-
-        #for pos, key  in enumerate(permutatedKeys):
-        for currPos in range(0,16):
-            leftMssg, rightMssg = self._feistelNetwork(leftMssg, rightMssg, permutatedKeys[currPos])
+        #this is going to be where the Fistel network will be in here
 
 
-        #swapping the left and the right messages
-        encryptedMssg = rightMssg + leftMssg
-
-        #applying the final inverse permutation on the given message
-        self.__message = self._applyPermutation(encryptedMssg, self._invPer)
-        self.__encryption = False
-
-        return self.__message
 
     def decrypt(self, cipher):
-
-        self.__encryption = True
+        pass
 
 
     def laodMessageAsFile(self, fileName): 
@@ -413,15 +400,11 @@ class DES(object):
     #applying the feistel network based on the illustration given on slide 15 
     #of the lecture slides
     def _feistelNetwork(self, leftStream, rightStream, key):
+
         rightStreamFunc = self._feistelNetworkFunction(rightStream, key)
 
-        #Xoring the result from the function and the left stream of the data 
-        newRight = self._xor(rightStreamFunc, leftStream)
-        newleft = rightStream
-
-        return newleft, newRight
-
-
+         #Xoring the result from the function and the left stream of the data 
+         newRight = self._xor(righ
 
 
     #TODO: you will need to come back and debug this to make sure that it's working the way which you will expect it to work
