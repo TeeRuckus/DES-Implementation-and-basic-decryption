@@ -228,9 +228,6 @@ class DESTest(unittest.TestCase):
             self.assertEqual(actual, expected[test], "checking if the right range"
                     + "the column numbers will be produced. Test # %s" % (test+1))
 
-    #TODO: come back and fix this to make sure that it's going to be working
-    @unittest.skip("I am testing individual functions, making sure that they"+
-            " do what they're supposed to do")
     def testFeistelNetworkFunction(self):
         righStreamData = "11110000101010101111000010101010"
         #the sixteen keys which were generated from previous example 
@@ -302,6 +299,9 @@ class DESTest(unittest.TestCase):
 
         self.assertEqual(actual, expected, "testing the encryption of the DES"+
                 " algorithm")
+
+    def testDecryption(self):
+        pass
 
 
 
