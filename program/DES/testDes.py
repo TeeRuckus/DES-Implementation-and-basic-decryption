@@ -228,6 +228,7 @@ class DESTest(unittest.TestCase):
             self.assertEqual(actual, expected[test], "checking if the right range"
                     + "the column numbers will be produced. Test # %s" % (test+1))
 
+    #TODO: come back and fix this to make sure that it's going to be working
     @unittest.skip("I am testing individual functions, making sure that they"+
             " do what they're supposed to do")
     def testFeistelNetworkFunction(self):
@@ -240,6 +241,34 @@ class DESTest(unittest.TestCase):
 
         self.assertEqual(expected, actual, "testing if the feistel network" +
                 " block will produce and return the right products")
+
+
+    def testBinaryToHexadecimal(self):
+        testData = ["0000","0001","0010","0011","0100","0101","0110","0111",
+                "1000","1001","1010","1011","1100","1101","1110", "1111"]
+
+        expected = ["0", "1", "2", "3", "4","5","6","7", "8", "9", "a", "b", 
+                    "c", "d", "e", "f"]
+
+        for test, data in enumerate(testData):
+            actual = self.desObj._binary2Hexadecimal(data)
+            self.assertEqual(actual, expected[test], "testing if this can successfully"+
+                    " convert binary numbers to hexadecimal test # %s" % (test+1))
+
+
+    def testHexadecimalToBinary(self):
+        expected = ["0000","0001","0010","0011","0100","0101","0110","0111",
+                "1000","1001","1010","1011","1100","1101","1110", "1111"]
+
+        testData = ["0", "1", "2", "3", "4","5","6","7", "8", "9", "A", "B", 
+                    "C", "D", "E", "F"]
+
+        for test, data in enumerate(testData):
+            actual = self.desObj._hexadecimal2Binary(data)
+            self.assertEqual(actual, expected[test], "testing for successful" +
+                    " conversation from hexadecimal numbers to binary numbers" + 
+                    " test # %s" % (test + 1))
+
 
 
 

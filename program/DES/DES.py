@@ -3,6 +3,8 @@ from collections import deque
 import numpy as np
 
 #TODO: you will need to reference that cook book properly in your assignment.Here is the link for it: https://page.math.tu-berlin.de/~kant/teaching/hess/krypto-ws2006/des.htm
+#TODO: you will need to implement a hexadecimal formatter to be able to format your input as it's being read into the file, and converting it back to binary when it is feeding it into the DES algorithm
+
 
 class DES(object):
     #this is going to represent the initial permutation of the algorithm
@@ -194,6 +196,7 @@ class DES(object):
 
     @message.setter
     def message(self, newMessage):
+        #TODO: you will need to do some checking in her, to make sure if it's going to be in binary or hexadecimal before you read it and do anything to it
         self.__validateBlockLen(newMessage, 64)
         self.__message = newMessage
 
@@ -212,18 +215,18 @@ class DES(object):
 
 
     #Public methods
+    #TODO: you will need come back and test this function to see if it will work
     def encypt(self):
         #if all the appropriate information hasn't being loaded into the object
         #we can't start decrypting the message
         if self.__message == None:
-            raise  EncryptionError("Please set a message before you start encryption")
+            raise  EncryptionError("ERROR: message hasn't been set")
 
         if self.__key == None:
-            raise EncryptionError("Please set a key  before you start encryption")
+            raise EncryptionError("ERROR: key hasn't been set")
 
         if not self.__encryption:
-            raise  EncryptionError("message has already being encrypted"+ \
-                    "please decrypt message" )
+            raise  EncryptionError("ERROR: message has already been encrypted")
 
         permutatedKeys = []
 
@@ -262,11 +265,33 @@ class DES(object):
 
     def decrypt(self, cipher):
 
-        self.__encryption = True
+        if self.__message == None:
+            raise DecryptionError("ERROR: message hasn't being set")
+
+        if self.__key == None:
+            raise DecryptionError("ERROR: key hasn't being set")
+
+        if self.__encryption:
+            raise DecryptionError("ERROR: message hasn't been encrypted")
 
 
     def laodMessageAsFile(self, fileName): 
         pass
+
+
+    def _binary2Hexadecimal(self, inBinary):
+        decimalNum =  int(inBinary,2)
+        hexNum = hex(decimalNum)
+
+        return hexNum[2:]
+
+    def _hexadecimal2Binary(self, inHex):
+        decNum = int(inHex, 16)
+        #I want these numbers in sets of 4
+        binaryNum = format(decNum, "0>4b")
+
+        return binaryNum
+
 
     """
     INPUT: Data(String)
@@ -420,9 +445,6 @@ class DES(object):
         newleft = rightStream
 
         return newleft, newRight
-
-
-
 
     #TODO: you will need to come back and debug this to make sure that it's working the way which you will expect it to work
     def _feistelNetworkFunction(self, rightStream, key):
