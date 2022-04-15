@@ -304,11 +304,26 @@ class DES(object):
 
 
 
+    #TODO:you will need to come back and make sure that you're going to getting the exact same characters. They're some trailing characters which are missing from the file. So you will need to do
     def decrypt(self):
         #all the processing of splitting the cipher text into 64 blocks will
         #occur and happen here
-        decryptedMssg =  self.__decryptBlock(self.__message)
+
+        startVal = [xx for xx in range(0, len(self.__message) , 64)]
+
+        #the blocks for the cipher text
+        blocks = self._createBlocks(self.__message, startVal)
+
+        #decrypting each and every single block which was created and  joining
+        #them back into one big string
+        decryptedBlocks = []
+        for block in blocks:
+            decryptedBlocks.append(self.__decryptBlock(block ))
+
+        decryptedMssg = "".join(decryptedBlocks)
         self.__message = decryptedMssg
+        self.__encryption = encryptionStatus.decrypted
+        self.__key = None
 
         return decryptedMssg
 
@@ -346,11 +361,6 @@ class DES(object):
         #TODO: play around with this, and see if it's going to impact how this is going to be used
         decryptedMssg = rightMssg + leftMssg
         inCipher = self._applyPermutation(decryptedMssg, self._invPer)
-        #telling the object that it has being already decrypted already and, 
-        #it should not try to decrypt itself again
-        self.__encryption = encryptionStatus.decrypted
-        #deleting the key, as this is meant to be private information
-        self__key = None
 
         return inCipher
 
@@ -372,21 +382,21 @@ class DES(object):
         return binaryFileContents
 
     def saveFile(self, fileName):
+        binaryMessage = self._padBinaryNum(self.__message, 8)
+        startVal =  [xx for xx in range(0, len(binaryMessage), 8)]
+        hexGroups = self._createBlocks(binaryMessage, startVal)
+
         #saving the file as hexadecimal digits
         if (self.__encryption == encryptionStatus.encrypted):
             #grouping the binary into groups of 8 bits
-            binaryMessage = self._padBinaryNum(self.__message, 8)
-
             #grouping the current message with each group having 8 bits
-            startVal =  [xx for xx in range(0, len(binaryMessage), 8)]
-            hexGroups = self._createBlocks(binaryMessage, startVal)
-
             with open(fileName, "w" ) as outStrm:
                 for binary in hexGroups:
                     outStrm.write(self._binary2Hexadecimal(binary))
         else:
-            pass
-            #saving the file as characters
+            with open(fileName, "w") as outStrm:
+                for binary in hexGroups:
+                    outStrm.write(self._binary2Char(binary))
 
 
     def _padBinaryNum(self, inBinary, requiredLen):
@@ -519,6 +529,10 @@ class DES(object):
         binaryNum = self._calcInt2Binary(intChar, 8)
 
         return binaryNum
+
+    def  _binary2Char(self, inBinary):
+        decNum = int(inBinary, 2)
+        return chr(decNum)
     
     
     def _calcInt2Binary(self, intNum, requiredLen):
