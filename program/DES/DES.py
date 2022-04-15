@@ -2,14 +2,18 @@ from Errors import *
 from collections import deque
 import numpy as np
 
-#TODO: you will need to reference that cook book properly in your assignment.Here is the link for it: https://page.math.tu-berlin.de/~kant/teaching/hess/krypto-ws2006/des.htm
+"""
+This DES algorithm was built and tested given the examples found in 
+"The DES algorithm Illustrated" by J. Orlin Grabbe 
+url: https://page.math.tu-berlin.de/~kant/teaching/hess/krypto-ws2006/des.htm
+access date: 15/04/2021
+Title of web page: The DES algorithm Illustrated
+Author: J. Orlin Grabbe
+"""
 #TODO: you will need to implement a hexadecimal formatter to be able to format your input as it's being read into the file, and converting it back to binary when it is feeding it into the DES algorithm
 
 
 class DES(object):
-    #this is going to represent the initial permutation of the algorithm
-    #TODO: you will already have this, you should come back and delete this out
-    #of your code
     _IP = [58, 50, 42, 34, 26, 18, 10, 2,
             60, 52, 44, 36, 28, 20, 12, 4,
             62, 54, 46, 38, 30, 22, 14, 6,
@@ -213,13 +217,27 @@ class DES(object):
         self.__encryption = True
 
 
-    #Public methods
-    #TODO: you will need come back and test this function to see if it will work
-    #TODO: you will need a pre-processing method which will separate the blocks into 64 bits
+
     def encrypt(self):
+        #all the preprocessing of the message will occur here, hence dividing
+        #the message into the appropriate 64 bit block sizes
+
+        #checking on how much we will need to pad the message by for each block
+        #to be represented by a 64 block stream
+        multiples = len(self.__message)
+        #how many bits will need t 
+        remainder = len(self.__message) % 64
+
+        encryptedMssg = self.__encryptBlock(self.__message)
+        self.__message = encryptedMssg
+        return encryptedMssg
+
+    #Public methods
+    #TODO: you will need to change this to encrypting a block instead
+    def __encryptBlock(self, inMessage):
         #if all the appropriate information hasn't being loaded into the object
         #we can't start decrypting the message
-        if self.__message == None:
+        if inMessage == None:
             raise  EncryptionError("ERROR: message hasn't been set")
 
         if self.__key == None:
@@ -232,7 +250,7 @@ class DES(object):
         permutatedKeys = self._keyschedule()
         
         #STEP 2: Encode each 64 bit block of data
-        initalPermutationMessg = self._applyPermutation(self.__message, self._IP)
+        initalPermutationMessg = self._applyPermutation(inMessage, self._IP)
         leftMssg, rightMssg = self._splitKeys(initalPermutationMessg)
 
         #applying the sixteen rounds of feistel
@@ -246,17 +264,25 @@ class DES(object):
         encryptedMssg = rightMssg + leftMssg
 
         #applying the final inverse permutation on the given message
-        self.__message = self._applyPermutation(encryptedMssg, self._invPer)
+        inMessage = self._applyPermutation(encryptedMssg, self._invPer)
         self.__encryption = False
-        #TODO: find out if this is going to be necessary to d
-        #deleting the key after the encryption for security reasons
         self.__key = None
 
-        return self.__message
+
+        return inMessage
 
     def decrypt(self):
+        #all the processing of splitting the cipher text into 64 blocks will
+        #occur and happen here
+        decryptedMssg =  self.__decryptBlock(self.__message)
+        self.__message = decryptedMssg
 
-        if self.__message == None:
+        return decryptedMssg
+
+
+    def __decryptBlock(self, inCipher):
+
+        if inCipher == None:
             raise DecryptionError("ERROR: message hasn't being set")
 
         if self.__key == None:
@@ -275,7 +301,7 @@ class DES(object):
 
         #STEP 2: Decoding each 65 bit block of data
 
-        decryptedMssgPermutated  = self._applyPermutation(self.__message, self._IP)
+        decryptedMssgPermutated  = self._applyPermutation(inCipher, self._IP)
         leftMssg, rightMssg = self._splitKeys(decryptedMssgPermutated)
 
         #applying the 16 round of message on the reversed keys
@@ -286,14 +312,14 @@ class DES(object):
 
         #TODO: play around with this, and see if it's going to impact how this is going to be used
         decryptedMssg = rightMssg + leftMssg
-        self.__message = self._applyPermutation(decryptedMssg, self._invPer)
+        inCipher = self._applyPermutation(decryptedMssg, self._invPer)
         #telling the object that it has being already decrypted already and, 
         #it should not try to decrypt itself again
         self.__encryption = True 
         #deleting the key, as this is meant to be private information
         self__key = None
 
-        return self.__message
+        return inCipher
 
 
     def _keyschedule(self):
@@ -490,7 +516,6 @@ class DES(object):
 
         return newleft, newRight
 
-    #TODO: you will need to come back and debug this to make sure that it's working the way which you will expect it to work
     def _feistelNetworkFunction(self, rightStream, key):
         #expanding the right stream bits from 32 bits to 48 bits
         sBoxAppliedFuncList = []

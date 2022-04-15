@@ -304,7 +304,6 @@ class DESTest(unittest.TestCase):
         self.desObj.key =  "0001001100110100010101110111100110011011101111001101111111110001"
         actualDecrypt = self.desObj.decrypt()
 
-        #TODO: come back and implement this  when you have actually done the decryption function
         self.assertEqual(actualDecrypt, initialMessage, "testing of the"+
                 " decryption function of DES")
 
