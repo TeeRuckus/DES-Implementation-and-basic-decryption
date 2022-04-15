@@ -212,19 +212,19 @@ class DES(object):
             binaryNum = []
             for char in newKey:
                 binaryNum.append(self._char2Binary(char))
-
             #making it to whole entire string 
             binaryNum = "".join(binaryNum)
             newKey = binaryNum
-
 
         keySize = len(newKey)
         #we will have to do some padding 
         if keySize <= 64:
             newKey = self._padBinaryNum(newKey, 64)
+            print("new Key ", len(newKey))
         else:
             newKey = newKey[:64]
             #we will have to do some chopping, just going to take first 64 bits
+
 
         #sanity check, to ensure that everything was done correctly
         self.__validateBlockLen(newKey, 64)
@@ -419,6 +419,7 @@ class DES(object):
                     outStrm.write(self._binary2Char(binary))
 
 
+    #TODO: I think that he maths in here is going to be a little bit wrong
     def _padBinaryNum(self, inBinary, requiredLen):
         remainder = len(inBinary) % requiredLen
         bits = "".join(["0" for xx in range(0,remainder)])
