@@ -280,7 +280,7 @@ class DESTest(unittest.TestCase):
     #I don't really care about the other class field, they is not that much 
     #which will really need to be done with that class field 
 
-    def testEncryption(self):
+    def testEncryptionDecryption(self):
         #this will be in hex representation, the data strucuure will allow the messages in binary
 
         initialMessage = "0123456789ABCDEF"
@@ -300,8 +300,14 @@ class DESTest(unittest.TestCase):
         self.assertEqual(actual, expected, "testing the encryption of the DES"+
                 " algorithm")
 
-    def testDecryption(self):
-        pass
+        #I will need to reset the key again as it has being deleted
+        self.desObj.key =  "0001001100110100010101110111100110011011101111001101111111110001"
+        actualDecrypt = self.desObj.decrypt()
+
+        #TODO: come back and implement this  when you have actually done the decryption function
+        self.assertEqual(actualDecrypt, initialMessage, "testing of the"+
+                " decryption function of DES")
+
 
 
 

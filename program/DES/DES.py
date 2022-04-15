@@ -228,21 +228,9 @@ class DES(object):
         if not self.__encryption:
             raise  EncryptionError("ERROR: message has already been encrypted")
 
-        permutatedKeys = []
-
         #STEP 1: creating the 16 sub keys, each of which is 48 bits long
-        permutatedKey = self._applyPermutation(self.__key, self._PC_1)
-
-        #splitting the keys to get the right and the left halves
-        keys = self._splitKeys(permutatedKey)
-
-        #applying and getting the sixteen rounds of keys
-        sixteenRoundKeys  =  self._createKeys(keys) 
-
-        #applying the second permutation on the keys
-        for key in sixteenRoundKeys:
-            permutatedKeys.append(self._applyPermutation(key, self._PC_2))
-
+        permutatedKeys = self._keyschedule()
+        
         #STEP 2: Encode each 64 bit block of data
         initalPermutationMessg = self._applyPermutation(self.__message, self._IP)
         leftMssg, rightMssg = self._splitKeys(initalPermutationMessg)
@@ -266,7 +254,7 @@ class DES(object):
 
         return self.__message
 
-    def decrypt(self, cipher):
+    def decrypt(self):
 
         if self.__message == None:
             raise DecryptionError("ERROR: message hasn't being set")
@@ -276,6 +264,55 @@ class DES(object):
 
         if self.__encryption:
             raise DecryptionError("ERROR: message hasn't been encrypted")
+
+
+        #STEP 1: re-creating the 16 sub keys, each of which is 48 bits  long
+        #generating the key sets which we produced in the encryption set
+        permutatedKeys = self._keyschedule()
+        #reversing the order of keys produced, so we can do the fesitel network
+        #to decrypt the cipher produced by the encrypt function
+        permutatedKeys.reverse()
+
+        #STEP 2: Decoding each 65 bit block of data
+
+        decryptedMssgPermutated  = self._applyPermutation(self.__message, self._IP)
+        leftMssg, rightMssg = self._splitKeys(decryptedMssgPermutated)
+
+        #applying the 16 round of message on the reversed keys
+        for currPos in range(0,16):
+            leftMssg, rightMssg = self._feistelNetwork(leftMssg, rightMssg,\
+                    permutatedKeys[currPos])
+
+
+        #TODO: play around with this, and see if it's going to impact how this is going to be used
+        decryptedMssg = rightMssg + leftMssg
+        self.__message = self._applyPermutation(decryptedMssg, self._invPer)
+        #telling the object that it has being already decrypted already and, 
+        #it should not try to decrypt itself again
+        self.__encryption = True 
+        #deleting the key, as this is meant to be private information
+        self__key = None
+
+        return self.__message
+
+
+    def _keyschedule(self):
+        permutatedKeys = []
+
+        permutatedKey = self._applyPermutation(self.__key, self._PC_1)
+
+        #splitting the keys to get the right and the left halves
+        keys = self._splitKeys(permutatedKey)
+
+        #applying and getting the sixteen rounds of keys
+        sixteenRoundKeys  =  self._createKeys(keys) 
+
+        #applying the second permutation on the keys
+        for key in sixteenRoundKeys:
+            permutatedKeys.append(self._applyPermutation(key, self._PC_2))
+
+        return permutatedKeys
+
 
 
     def laodMessageAsFile(self, fileName): 
