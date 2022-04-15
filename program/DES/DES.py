@@ -388,7 +388,8 @@ class DES(object):
     
     
     def _calcInt2Binary(self, intNum, requiredLen):
-        binaryNum = ""
+        return format(intNum, "0>"+requiredLen+"b")
+        """binaryNum = ""
         while intNum > 0:
             remindar = intNum % 2
             intNum = intNum // 2
@@ -402,7 +403,7 @@ class DES(object):
             difference = requiredLen - len(binaryNum)
             binaryNum = self._padBinary(binaryNum, difference)
 
-        return binaryNum
+        return binaryNum"""
 
     #padding to the left of the binary number, as that will not increase the
     #number of  the binary number
@@ -412,7 +413,10 @@ class DES(object):
         return padDigits + inBinary
     
     def _calcBinary2Int(self, inBinary):
-        intNum = 0
+        return int(inBinary, 2)
+            
+        #TODO: you will need to come back and delete this
+        """intNum = 0
         powerPositions =  [xx  for xx in range(0,len(inBinary))]
         #reversing the power positions, as the for loop is going to read right
         #to left, instead of left to right 
@@ -422,7 +426,7 @@ class DES(object):
             if int(num) == 1:
                 intNum = intNum + 2 ** int(pos)
 
-        return intNum
+        return intNum"""
 
     def _xor(self, streamOne, streamTwo):
 
