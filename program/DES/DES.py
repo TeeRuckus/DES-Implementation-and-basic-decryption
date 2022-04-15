@@ -1,5 +1,6 @@
 from Errors import *
 from collections import deque
+from enum import Enum
 import numpy as np
 
 """
@@ -11,6 +12,11 @@ Title of web page: The DES algorithm Illustrated
 Author: J. Orlin Grabbe
 """
 #TODO: you will need to implement a hexadecimal formatter to be able to format your input as it's being read into the file, and converting it back to binary when it is feeding it into the DES algorithm
+
+#an Enum class to represent if the current message has being encrypted or not
+class encryptionStatus(Enum):
+    encrypted = 1
+    decrypted = 2
 
 
 class DES(object):
@@ -175,7 +181,7 @@ class DES(object):
         #it up as time goes
         self.__key = None 
         self.__message = None
-        self.__encryption  = True
+        self.__encryption  = encryptionStatus.decrypted
 
     #ACCESSOR METHODS:
     @property
@@ -196,7 +202,7 @@ class DES(object):
     @key.setter
     def key(self, newKey):
         self.__validateBlockLen(newKey, 64)
-        self.__key = newKey 
+        self.__key = newKey
 
     @message.setter
     def message(self, newMessage):
@@ -214,7 +220,7 @@ class DES(object):
 
     @encryption.deleter
     def encyption(self):
-        self.__encryption = True
+        self.__encryption = encryptionStatus.decrypted
 
 
 
@@ -243,6 +249,9 @@ class DES(object):
 
         encryptedMssg = "".join(encryptedBlocks)
         self.__message = encryptedMssg
+        self.__encryption = encryptionStatus.encrypted
+        self.__key = None
+
         return encryptedMssg
 
     #Public methods
@@ -255,7 +264,7 @@ class DES(object):
         if self.__key == None:
             raise EncryptionError("ERROR: key hasn't been set")
 
-        if not self.__encryption:
+        if (self.__encryption == encryptionStatus.encrypted):
             raise  EncryptionError("ERROR: message has already been encrypted")
 
         #STEP 1: creating the 16 sub keys, each of which is 48 bits long
@@ -277,8 +286,6 @@ class DES(object):
 
         #applying the final inverse permutation on the given message
         inMessage = self._applyPermutation(encryptedMssg, self._invPer)
-        self.__encryption = False
-        self.__key = None
 
 
         return inMessage
@@ -314,7 +321,7 @@ class DES(object):
         if self.__key == None:
             raise DecryptionError("ERROR: key hasn't being set")
 
-        if self.__encryption:
+        if (self.__encryption == encryptionStatus.decrypted):
             raise DecryptionError("ERROR: message hasn't been encrypted")
 
 
@@ -341,7 +348,7 @@ class DES(object):
         inCipher = self._applyPermutation(decryptedMssg, self._invPer)
         #telling the object that it has being already decrypted already and, 
         #it should not try to decrypt itself again
-        self.__encryption = True 
+        self.__encryption = encryptionStatus.decrypted
         #deleting the key, as this is meant to be private information
         self__key = None
 
@@ -365,21 +372,26 @@ class DES(object):
         return binaryFileContents
 
     def saveFile(self, fileName):
-        #grouping the binary into groups of 8 bits
-        binaryMessage = self._padBinaryNum(self.__message, 8)
+        #saving the file as hexadecimal digits
+        if (self.__encryption == encryptionStatus.encrypted):
+            #grouping the binary into groups of 8 bits
+            binaryMessage = self._padBinaryNum(self.__message, 8)
 
-        #grouping the current message with each group having 8 bits
-        startVal =  [xx for xx in range(0, len(binaryMessage), 8)]
-        hexGroups = self._createBlocks(binaryMessage, startVal)
+            #grouping the current message with each group having 8 bits
+            startVal =  [xx for xx in range(0, len(binaryMessage), 8)]
+            hexGroups = self._createBlocks(binaryMessage, startVal)
 
-        with open(fileName, "w" ) as outStrm:
-            for binary in hexGroups:
-                outStrm.write(self._binary2Hexadecimal(binary))
+            with open(fileName, "w" ) as outStrm:
+                for binary in hexGroups:
+                    outStrm.write(self._binary2Hexadecimal(binary))
+        else:
+            pass
+            #saving the file as characters
 
 
     def _padBinaryNum(self, inBinary, requiredLen):
         remainder = len(inBinary) % requiredLen
-        bits = "".join([str(xx) for xx in range(0,remainder)])
+        bits = "".join(["0" for xx in range(0,remainder)])
         #padding the front of the message with the required zeros
         inBinary = bits + inBinary
         return  inBinary
