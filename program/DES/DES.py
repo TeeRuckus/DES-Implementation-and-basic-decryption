@@ -191,14 +191,11 @@ class DES(object):
     #MUTATOR METHODS:
     @key.setter
     def key(self, newKey):
-        self.__validateBlockLen(newKey, 56)
+        self.__validateBlockLen(newKey, 64)
         self.__key = newKey 
 
     @message.setter
     def message(self, newMessage):
-        #TODO: you will need to do some checking in her, to make sure if it's going to be in binary or hexadecimal before you read it and do anything to it
-        #TODO: you will need to come back and uncomment this, once you have figure out
-        #your padding strategy for your algorithm
         self.__validateBlockLen(newMessage, 64)
         self.__message = newMessage
 
@@ -218,6 +215,7 @@ class DES(object):
 
     #Public methods
     #TODO: you will need come back and test this function to see if it will work
+    #TODO: you will need a pre-processing method which will separate the blocks into 64 bits
     def encrypt(self):
         #if all the appropriate information hasn't being loaded into the object
         #we can't start decrypting the message
@@ -233,7 +231,7 @@ class DES(object):
         permutatedKeys = []
 
         #STEP 1: creating the 16 sub keys, each of which is 48 bits long
-        permutatedKey = self._applyPermutation(key, self._PC_1)
+        permutatedKey = self._applyPermutation(self.__key, self._PC_1)
 
         #splitting the keys to get the right and the left halves
         keys = self._splitKeys(permutatedKey)
@@ -393,7 +391,7 @@ class DES(object):
     
     
     def _calcInt2Binary(self, intNum, requiredLen):
-        return format(intNum, "0>"+requiredLen+"b")
+        return format(intNum, "0>"+str(requiredLen)+"b")
         """binaryNum = ""
         while intNum > 0:
             remindar = intNum % 2
@@ -522,6 +520,5 @@ class DES(object):
 
     def __validateBlockLen(self, inBlock, size):
         if (len (inBlock) != size):
-            raise DESBlockError("ERROR: the to calculate the row, the input" +
-                    " block must be 6 bits long")
+            raise DESBlockError("ERROR:block must be %s bits long. %s length found" % (size, len(inBlock)))
 

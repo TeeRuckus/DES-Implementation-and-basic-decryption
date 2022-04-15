@@ -269,11 +269,28 @@ class DESTest(unittest.TestCase):
                     " conversation from hexadecimal numbers to binary numbers" + 
                     " test # %s" % (test + 1))
 
+
+    #TODO: you will need to  come back and test these properly
+    def testKeyAccesorsMutators(self): 
+        testKeys = ["0001001100110100010101110111100110011011101111001101111111110001"]
+
+
+    #TODO: you will need to come back and test these properly
+    def messageAccesorsMuators(self):
+        pass
+
+
+    #I don't really care about the other class field, they is not that much 
+    #which will really need to be done with that class field 
+
     def testEncryption(self):
         #this will be in hex representation, the data strucuure will allow the messages in binary
 
         initialMessage = "0123456789ABCDEF"
         initialMessage = self.desObj._hexadecimal2Binary(initialMessage)
+        
+        #TODO: I am just cheating here, you will need to come back here and remove this line once you have figured out what padding strategy youu're going to be using  
+        initialMessage =  "0000000" + initialMessage
 
         expected = "85E813540F0AB405"
         expected = self.desObj._hexadecimal2Binary(expected)
