@@ -353,6 +353,8 @@ class DES(object):
 
         #the blocks for the cipher text
         blocks = self._createBlocks(self.__message, startVal)
+        #TODO: come back and delete out
+        #print(blocks)
 
         #decrypting each and every single block which was created and  joining
         #them back into one big string
@@ -413,11 +415,19 @@ class DES(object):
         if (self.__encryption == encryptionStatus.decrypted):
             for char in fileContents:
                 binaryFileContents.append(self._char2Binary(char))
+        else:
+            #the binary numbers were saved in groups of two  
+            #startVal = [xx for xx in range(0, len(fileContents), 2)]
+            #hexGroups = self._createBlocks(fileContents, startVal)
 
-            #making this back into one giant string again
-            binaryFileContents = "".join(binaryFileContents)
+            for hexDec in fileContents:
+                #binaryFileContents.append(self._hexadecimal2Binary(hexDec))
+                binaryFileContents.append(self._hexadecimal2BinaryFile(hexDec))
 
+        #making this back into one giant string again
+        binaryFileContents = "".join(binaryFileContents)
         self.__message = binaryFileContents
+        print("message length ", len(self.__message))
 
         return binaryFileContents
 
@@ -432,7 +442,10 @@ class DES(object):
             #grouping the current message with each group having 8 bits
             with open(fileName, "w" ) as outStrm:
                 for binary in hexGroups:
-                    outStrm.write(self._binary2Hexadecimal(binary))
+                    toWrite = self._binary2Hexadecimal(binary)
+                    if len(toWrite) == 1:
+                        toWrite = "0" + toWrite
+                    outStrm.write(toWrite)
         else:
             with open(fileName, "w") as outStrm:
                 for binary in hexGroups:
@@ -477,11 +490,6 @@ class DES(object):
         return permutatedKeys
 
 
-
-    def laodMessageAsFile(self, fileName): 
-        pass
-
-
     def _binary2Hexadecimal(self, inBinary):
         decimalNum =  int(inBinary,2)
         hexNum = hex(decimalNum)
@@ -491,6 +499,12 @@ class DES(object):
     def _hexadecimal2Binary(self, inHex):
         decNum = int(inHex, 16)
         binaryNum = format(decNum, "b")
+
+        return binaryNum
+
+    def _hexadecimal2BinaryFile(self, inHex):
+        decNum = int(inHex, 16)
+        binaryNum = format(decNum, "0>4b")
 
         return binaryNum
 
