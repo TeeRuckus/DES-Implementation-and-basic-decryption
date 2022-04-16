@@ -10,6 +10,10 @@ class EncryptionError(Error):
     def __init__(self, message):
         self.message = message
 
-class DecryptionError(Error ):
+class DecryptionError(Error):
     def __init__(self , message):
+        self.message = message
+
+class DESError(Error):
+    def __init__(self, message):
         self.message = message

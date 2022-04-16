@@ -1,24 +1,84 @@
 from DES import *
-#TODO: you will need to come back and make sure that the decrypted function, is not returning the message in binary but in human readable text
+#TODO: you will need to delete this error from the error file
+from Errors import DESError
+import sys
 
 def main():
-    fileName = "DES-test.txt"
-    des = DES()
+    if len(sys.argv) != 5:
+        print("""
+                Insufficient arguments to the program. Please make sure that
+                the program will be ran in the following manner
 
-    e = des.loadFile(fileName)
+                python3 main.py <mode> <key> <input file name> <outputfile>
 
-    #des.message = "fuck"
+                <mode>: The following is case insensitive
+                    (e)ncryption - for encryption mode of the program 
+                    (d)ecryption - for decryption mode of the program
+
+                <key>: any input which you want to use as a key to either 
+                encrypt or decrypt your file
+
+                <input file name>: any file which you want to encrypt or
+                decrypt
+                
+                <output file>: the file name which you want to write the
+                results of the encryption or decryption too
+
+                """)
+
+    else:
+        des = DES()
+        des.key = sys.argv[2]
+
+
+        if  sys.argv[1][0].upper() == "E":
+            try:
+                #des.encryption = encryptionStatus.decrypted
+                des.loadFile(sys.argv[3])
+            except FileNotFoundError as err:
+                print("""
+                        Please make sure that you have typed out file name 
+                        correctly, or file exists in the current directory
+
+                        ERROR FOUND:
+                        %s
+
+                        """ % err)
+            #you will need to have a try and catch statement in here
+            encryptedtext = des.encrypt()
+            des.saveFile(sys.argv[4])
+
+        elif sys.argv[1][0].upper() == "D":
+            try:
+                des.encryption = encryptionStatus.encrypted
+                des.loadFile(sys.argv[3])
+            except FileNotFoundError as err:
+                print("""
+                        Please make sure that you have typed out file name 
+                        correctly, or file exists in the current directory
+
+                        ERROR FOUND:
+                        %s
+
+                        """ % err)
+            #this is needed because of the manner the class has being written
+            des.decrypt()
+            des.saveFile(sys.argv[4])
+        else: 
+            print("""
+                Please make sure you enter the modes as the following
+                    (e)ncryption - for encryption mode of the program 
+                    (d)ecryption - for decryption mode of the program
+                """)
+
+    """
+
+
     des.key = "Tawana"
-    #des.key =  "0001001100110100010101110111100110011011101111001101111111110001"
-    encryptedText = des.encrypt()
-    des.saveFile("out.txt")
 
-
-    des.key = "Tawana"
-
-    #des.key =  "0001001100110100010101110111100110011011101111001101111111110001"
     decryptedContents = des.decrypt()
     des.saveFile("retrieved.txt")
+    """
 
 if __name__ == "__main__":
     main()

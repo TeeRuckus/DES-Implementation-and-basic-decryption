@@ -200,6 +200,10 @@ class DES(object):
 
 
     #MUTATOR METHODS:
+    @encryption.setter
+    def encryption(self, mode):
+        self.__encryption = mode
+
     @key.setter
     #TODO: I am also going to be assuming that the user will be inputting a word as their key
     def key(self, newKey):
@@ -333,6 +337,12 @@ class DES(object):
             elif pos < len(startVal) - 1:
                 blocks.append(inBinary[start:startVal[pos+1]])
 
+        #TODO: make sure that this is actually working properly
+        #print(startVal[-1])
+        #flushing out the remainder of the message once at the end of the blocks#
+        blocks.append(inBinary[startVal[-1]:])
+
+
         return blocks
 
     def decrypt(self):
@@ -398,12 +408,15 @@ class DES(object):
 
         #I want the file contents as one giant string
         fileContents = "".join(fileContents)
-        binaryFileContents = []
-        for char in fileContents:
-            binaryFileContents.append(self._char2Binary(char))
 
-        #making this back into one giant string again
-        binaryFileContents = "".join(binaryFileContents)
+        binaryFileContents = []
+        if (self.__encryption == encryptionStatus.decrypted):
+            for char in fileContents:
+                binaryFileContents.append(self._char2Binary(char))
+
+            #making this back into one giant string again
+            binaryFileContents = "".join(binaryFileContents)
+
         self.__message = binaryFileContents
 
         return binaryFileContents
@@ -477,7 +490,6 @@ class DES(object):
 
     def _hexadecimal2Binary(self, inHex):
         decNum = int(inHex, 16)
-        #I want these numbers in sets of 4
         binaryNum = format(decNum, "b")
 
         return binaryNum
@@ -546,9 +558,6 @@ class DES(object):
             leftStr = "".join([ii for ii in leftKey])
             rightStr = "".join([ii for ii in rightKey])
             allKeys.append(leftStr + rightStr)
-
-
-
 
         return allKeys
 
