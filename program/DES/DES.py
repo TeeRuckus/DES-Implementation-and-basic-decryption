@@ -206,16 +206,8 @@ class DES(object):
         #TODO: you will need to be able to do some padding or chopping depending on what the user has inputted into your program
         #TODO: you will need to do the same error checking for the other function to make sure that you're reading in a binary number, otherwise you will need to convert it to binary
         #trying to determine if binary number already 
-        try: 
-            binaryNum = int(newKey, 2)
-        except ValueError:
-            #not a binary number and must be converted to a binary number
-            binaryNum = []
-            for char in newKey:
-                binaryNum.append(self._char2Binary(char))
-            #making it to whole entire string 
-            binaryNum = "".join(binaryNum)
-            newKey = binaryNum
+
+        newKey = self.__determineIfBinary(newKey)
 
         keySize = len(newKey)
         #we will have to do some padding 
@@ -232,6 +224,8 @@ class DES(object):
 
     @message.setter
     def message(self, newMessage):
+        #TODO: you will need to come back and implement this, when you will have time
+        #newMessage = self.__determineIfBinary(newMessage)
         self.__message = newMessage
 
     #deleter methods, to clear the values which have being set already 
@@ -248,6 +242,19 @@ class DES(object):
         self.__encryption = encryptionStatus.decrypted
 
 
+    def __determineIfBinary(self,newKey):
+        try: 
+            binaryNum = int(newKey, 2)
+        except ValueError:
+            #not a binary number and must be converted to a binary number
+            binaryNum = []
+            for char in newKey:
+                binaryNum.append(self._char2Binary(char))
+            #making it to whole entire string 
+            binaryNum = "".join(binaryNum)
+            newKey = binaryNum
+
+        return newKey
 
     def encrypt(self):
         #all the preprocessing of the message will occur here, hence dividing
@@ -258,6 +265,7 @@ class DES(object):
 
         #how many bits will need to be padded to make the message be a multiple of 64
         self.__paddedZeros = len(self.__message) % 64
+        #self.__paddedZeros = abs(len(self.__message) - 64)
         self.__message = self._padBinaryNum(self.__message, 64)
 
         #we know that all the values are going to be multiples of 64 hence,
@@ -351,7 +359,6 @@ class DES(object):
 
 
     def __decryptBlock(self, inCipher):
-
         if inCipher == None:
             raise DecryptionError("ERROR: message hasn't being set")
 
@@ -423,9 +430,17 @@ class DES(object):
     def _padBinaryNum(self, inBinary, requiredLen):
         #I am just trying out this implementation as it gives you the actual required bits
         
-        remainder = abs(len(inBinary) - requiredLen)
+        #TODO: the line below this, this idea doesn't work at all
+        #remainder = abs(len(inBinary) - requiredLen)
         #TODO: come back and delete this line of code as you don't need it anymore
-        #remainder = len(inBinary) % requiredLen
+
+        remainder = 0
+        #we always want the big number to be divided by the smaller number
+        if len(inBinary) > requiredLen:
+            remainder = len(inBinary) % requiredLen
+        else:
+            remainder =  requiredLen % len(inBinary)
+
         bits = "".join(["0" for xx in range(0,remainder)])
         #padding the front of the message with the required zeros
         inBinary = bits + inBinary
