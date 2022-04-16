@@ -1,0 +1,32 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+PercentFormatter	main.py	/^from matplotlib.ticker import PercentFormatter$/;"	i
+Speller	LetterFrequency.py	/^from autocorrect import Speller$/;"	i
+analyseAttempts	main.py	/^def analyseAttempts(allAttempts, dictonary):$/;"	f
+attackLetterFrequency	main.py	/^def attackLetterFrequency():$/;"	f
+break_string	AffineCipher.py	/^def break_string(mssg):$/;"	f
+bruteForceAttack	main.py	/^def bruteForceAttack(fileName):$/;"	f
+bruteForceAttempts	main.py	/^def bruteForceAttempts(fileName):$/;"	f
+colors	main.py	/^from matplotlib import colors$/;"	i
+correction	LetterFrequency.py	/^def correction(inPassage):$/;"	f
+count_letters	LetterFrequency.py	/^def count_letters(words):$/;"	f
+decryptLine	LetterFrequency.py	/^def decryptLine(inLine, lookUpTable):$/;"	f
+decryptText	LetterFrequency.py	/^def decryptText(lookUpTable, fileName):$/;"	f
+decryption	AffineCipher.py	/^def decryption(mssg, a, shift):$/;"	f
+decyptChar	AffineCipher.py	/^def decyptChar(inChar, a, shift):$/;"	f
+encryptChar	AffineCipher.py	/^def encryptChar(inChar, a, shift):$/;"	f
+encryption	AffineCipher.py	/^def encryption(mssg, a, shift):$/;"	f
+gcdExt	AffineCipher.py	/^def  gcdExt(a, b):$/;"	f
+invMod	AffineCipher.py	/^def invMod(a, m):$/;"	f
+letterFrequencyAnlaysis	main.py	/^def letterFrequencyAnlaysis(fileName):$/;"	f
+main	main.py	/^def main():$/;"	f
+matplotlib	main.py	/^import matplotlib.pyplot as plt$/;"	i
+np	LetterFrequency.py	/^import numpy as np$/;"	i
+plotLetterFrequencyAnlaysis	main.py	/^def plotLetterFrequencyAnlaysis(labels, frequency, titleName):$/;"	f
+plt	main.py	/^import matplotlib.pyplot as plt$/;"	i
+read_file	LetterFrequency.py	/^def read_file(fileName):$/;"	f
+sys	main.py	/^import sys$/;"	i

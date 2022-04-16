@@ -1,6 +1,5 @@
 import numpy as np
-#TODO: you will need to install this on the uni computer when you do your demonstration
-from autocorrect import Speller
+#from autocorrect import Speller
 
 #Read files, and reads all the worlds as lists
 def read_file(fileName):
@@ -58,6 +57,7 @@ def decryptLine(inLine, lookUpTable):
     #making the new line one big string
     return "".join(newLine)
 
+"""
 def correction(inPassage):
     words = inPassage.split(" ")
     correctedPassage = []
@@ -68,6 +68,7 @@ def correction(inPassage):
         correctedPassage.append(newWord)
 
     return " ".join(correctedPassage)
+"""
 
 
 

@@ -3,30 +3,40 @@ from matplotlib import colors
 from matplotlib.ticker import PercentFormatter
 from LetterFrequency import *
 from AffineCipher import *
+import sys
 
-
-#TODO: you will need to  have a script which will install the required things 
-#which you will need for this assignment
 
 def main():
-    #attackLetterFrequency()
-    bruteForceAttack("cipher-test.txt")
+    if len(sys.argv) != 4:
+        print("""
+                Insufficient arguments to the program. Please make sure that
+                the program will be ran in the following manner
 
-    #content = read_file("cipher-test.txt")
-    #print(content)
-    """
-    key = 3
-    mssg = "attack at dawn"
-    #mssg = mssg.lower()
-    mssg = encryption(mssg, 3, key)
-    print(mssg)
+                python3 main.py <mode> <input file> <output file>
 
-    print("de-decrypting message again")
-    mssg = decryption(mssg,3, key)
-    print(mssg.lower())
-    """
+                <question>
+                    1 - to perform letter frequency analysis on input file
+                    2 - perform brute force attack on the input file
 
-def bruteForceAttack(fileName):
+                <input file>: the file which you would like to perform the 
+                attack on
+
+                <outputfile>: location of where you would like to save your 
+                results too
+            """)
+    elif sys.argv[1] == "1":
+        print("performing letter frequency attack...")
+        attackLetterFrequency(sys.argv[2], sys.argv[3])
+    elif sys.argv[1] == "2":
+        print("performing brute force attack...")
+        bruteForceAttack(sys.argv[2], sys.argv[3])
+    else:
+        print("invalid option :(")
+    
+    #bruteForceAttack("cipher-test.txt")
+
+
+def bruteForceAttack(fileName, outFile):
     allAttempts = bruteForceAttempts(fileName)
     dictonary = read_file("dictonary.txt")
     results = analyseAttempts(allAttempts, dictonary)
@@ -53,7 +63,9 @@ def bruteForceAttack(fileName):
             wordsCipher.append(word)
 
     wordsCipher = " ".join(wordsCipher)
-    print(wordsCipher)
+
+    with open(outFile, "w") as outStrm:
+        outStrm.write(wordsCipher)
 
 
 def analyseAttempts(allAttempts, dictonary):
@@ -98,13 +110,15 @@ def bruteForceAttempts(fileName):
 
 
 
-def attackLetterFrequency():
+def attackLetterFrequency(cipherInput, resultsOut):
+    #leaving this as hard coded as this should not be something which the user  
+    #has direct access too
     labelsBase, frequencyBase = letterFrequencyAnlaysis("inputText.txt")
-    labelsCipher, frequencyCipher = letterFrequencyAnlaysis("cipher-test.txt")
+    labelsCipher, frequencyCipher = letterFrequencyAnlaysis(cipherInput)
 
     plotLetterFrequencyAnlaysis(labelsBase, frequencyBase, "Base comparison text")
     plotLetterFrequencyAnlaysis(labelsCipher, frequencyCipher, "Cipher  plot")
-    #plt.show()
+    plt.show()
 
     #sorting the letters from the base comparison and the cipher text
     pairsBase = sorted(zip(labelsBase, frequencyBase), key=lambda x: x[1], reverse=True)
@@ -114,11 +128,18 @@ def attackLetterFrequency():
     lettersCipher = [xx[0] for xx in pairsCipher]
     #creating a look up table for the cipher text
     lookUpCipher = dict(zip(lettersCipher, lettersBase))
-    decrypted = decryptText(lookUpCipher, "cipher-test.txt")
-    decrypted = correction(decrypted)
+    decrypted = decryptText(lookUpCipher, cipherInput)
+    #decrypted = correction(decrypted)
 
-    with open("out.txt", "w") as outStrm:
+    with open(resultsOut, "w") as outStrm:
         outStrm.write(decrypted)
+
+    print("RETRIEVED LOOK UP TABLE")
+    print("\t Cipher Letter \t Actual Letter")
+
+    for cipher, actual in lookUpCipher.items(): 
+        print("\t %s \t \t %s" % (cipher, actual))
+
 
 def letterFrequencyAnlaysis(fileName):
     words = read_file(fileName)
