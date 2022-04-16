@@ -11,6 +11,7 @@ access date: 15/04/2021
 Title of web page: The DES algorithm Illustrated
 Author: J. Orlin Grabbe
 """
+#TODO: you will need come back and add a clear function in her, which will clear the state of the current object 
 
 #an Enum class to represent if the current message has being encrypted or not
 class encryptionStatus(Enum):
@@ -203,7 +204,7 @@ class DES(object):
     #TODO: I am also going to be assuming that the user will be inputting a word as their key
     def key(self, newKey):
         #TODO: you will need to be able to do some padding or chopping depending on what the user has inputted into your program
-
+        #TODO: you will need to do the same error checking for the other function to make sure that you're reading in a binary number, otherwise you will need to convert it to binary
         #trying to determine if binary number already 
         try: 
             binaryNum = int(newKey, 2)
@@ -220,7 +221,6 @@ class DES(object):
         #we will have to do some padding 
         if keySize <= 64:
             newKey = self._padBinaryNum(newKey, 64)
-            print("new Key ", len(newKey))
         else:
             newKey = newKey[:64]
             #we will have to do some chopping, just going to take first 64 bits
@@ -421,7 +421,11 @@ class DES(object):
 
     #TODO: I think that he maths in here is going to be a little bit wrong
     def _padBinaryNum(self, inBinary, requiredLen):
-        remainder = len(inBinary) % requiredLen
+        #I am just trying out this implementation as it gives you the actual required bits
+        
+        remainder = abs(len(inBinary) - requiredLen)
+        #TODO: come back and delete this line of code as you don't need it anymore
+        #remainder = len(inBinary) % requiredLen
         bits = "".join(["0" for xx in range(0,remainder)])
         #padding the front of the message with the required zeros
         inBinary = bits + inBinary
